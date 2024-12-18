@@ -83,7 +83,7 @@ class MarienbadBot:
 
 
 
-        print("\t\t\t\t\t\t\033[34mFait par : Augustin LETANG / Célian\033[0m")
+        print("\t\t\t\t\t\t\033[34mFait par : Augustin LETANG / Célian TOUZEAU\033[0m")
         print("\n\n")
         print("\t\t\t\t\t   a : \033[32mLancer le jeu\033[0m \t b : \033[32mLancer les tests unitaires\033[0m")
         print("\n\n")
