@@ -175,7 +175,7 @@ def IA_renforcement(renforcement, plateau, nomIA):
 
     plateau[tas] -= nbAllumettes
 
-    choix = (tas, nbAllumettes)
+    choix = (plateau, tas, nbAllumettes)
 
     print(f"{nomIA} retire {nbAllumettes} allumette(s) du tas {tas}")
 
@@ -193,9 +193,14 @@ def apprenstissage(renforcement, recompenses, nbTas = 5, nbParties = 1000):
             lesChoix.append(choix)
             if gagne(plateau):
                 print("L'Ordi a gagné")
+                for choix in lesChoix:
+                    renforcement[choix[0]][choix[1]][1] -= recompenses[1]
+                    renforcement[choix[0]][choix[1]][0][choix[2]] -= recompenses[1]
         else:
             print("L'IA Renforcée a gagné")
-            renforce
+            for choix in lesChoix:
+                renforcement[choix[0]][choix[1]][1] += recompenses[0]
+                renforcement[choix[0]][choix[1]][0][choix[2]] += recompenses[0]
 
         i += 1
 
@@ -204,5 +209,3 @@ def main():
     renforcement = {}
 
     apprenstissage(renforcement, recompenses, 5, 10)
-
-jeu(5, 4)
