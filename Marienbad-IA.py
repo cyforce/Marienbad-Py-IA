@@ -144,7 +144,10 @@ def main():
     renforcement = {
         'plateau': {
             'noTas': [
-                {'possibilite': 'proba'}, 
+                {
+                    'possibilite1': 'proba',
+                    'possibilite2': 'proba'
+                }, 
                 'proba'
             ]
         }
