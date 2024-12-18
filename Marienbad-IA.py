@@ -11,7 +11,7 @@ def creer_plateau(n):
         plateau.append(plateau[i-1]+2)
     return plateau
 
-def jeu(nbTas, modeJeu):
+def jeu(nbTas, modeJeu=1, renforcement=None):
     plateau = creer_plateau(nbTas)
     match modeJeu:
         case 1: # JcJ
@@ -58,7 +58,13 @@ def jeu(nbTas, modeJeu):
                 else:
                     print("L'IA1 a gagné")
         case 5: # Renforcement
-            print("Mode de jeu non implémenté")
+            IA_renforcement(renforcement, plateau, "IA Renforcée")
+            if not gagne(plateau):
+                plateau = ordi(plateau, "IA")
+                if gagne(plateau):
+                    print("L'IA a gagné")
+            else:
+                print("L'IA Renforcée a gagné")
 
 def joueur_humain(plateau, nomJoueur):
     print(f"Tour de {nomJoueur}")
@@ -131,10 +137,19 @@ def ordi(plateau, nomOrdi):
 
     return plateau
 
-def IA_renforcement():
-    print("Mode de jeu non implémenté")
+def IA_renforcement(renforcement, plateau, nomIA):
+    print()
 
 def main():
-    rouges = {}
-    jaunes = {}
+    renforcement = {
+        'plateau': {
+            'noTas': [
+                {'possibilite': 'proba'}, 
+                'proba'
+            ]
+        }
+    }
+
+    jeu(5, 5, renforcement)
+
 jeu(5, 4)
