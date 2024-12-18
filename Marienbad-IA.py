@@ -57,14 +57,6 @@ def jeu(nbTas, modeJeu=1, renforcement=None):
                         print("L'IA2 a gagné")
                 else:
                     print("L'IA1 a gagné")
-        case 5: # Renforcement
-            IA_renforcement(renforcement, plateau, "IA Renforcée")
-            if not gagne(plateau):
-                plateau = ordi(plateau, "IA")
-                if gagne(plateau):
-                    print("L'IA a gagné")
-            else:
-                print("L'IA Renforcée a gagné")
 
 def joueur_humain(plateau, nomJoueur):
     print(f"Tour de {nomJoueur}")
@@ -138,21 +130,79 @@ def ordi(plateau, nomOrdi):
     return plateau
 
 def IA_renforcement(renforcement, plateau, nomIA):
-    print()
+    print(f"Tour de {nomIA}")
+    display_board_with_bare(plateau)
+
+    keyList = list(renforcement.keys())
+    if(plateau not in keyList):
+        renforcement[plateau]
+        for i in range(len(plateau)):
+            renforcement[plateau][i] = [{}, 1]
+            for j in range(1, plateau[i]):
+                renforcement[plateau][i][0][j] = 1
+    
+    while True:
+        totalPossible = 0
+        for i in range(len(renforcement[plateau])):
+            totalPossible += renforcement[plateau][i][1]
+        
+        choix = randint(1, totalPossible)
+
+        for i in range(len(renforcement[plateau])):
+            choix -= renforcement[plateau][i][1]
+            if choix <= 0:
+                tas = i
+                break
+        
+        if plateau[tas]>= 0:
+            break
+    
+    while True:
+        totalPossible = 0
+        for i in range(len(renforcement[plateau][tas][0])):
+            totalPossible += renforcement[plateau][tas][0][i]
+
+        choix = randint(1, totalPossible)
+
+        for i in range(len(renforcement[plateau][tas][0])):
+            choix -= renforcement[plateau][tas][0][i]
+            if choix <= 0:
+                nbAllumettes = i
+                break
+        
+        if nbAllumettes <= plateau[tas]:
+            break
+
+    plateau[tas] -= nbAllumettes
+
+    choix = (tas, nbAllumettes)
+
+    print(f"{nomIA} retire {nbAllumettes} allumette(s) du tas {tas}")
+
+    return plateau, choix
+
+def apprenstissage(renforcement, recompenses, nbTas = 5, nbParties = 1000):
+    lesChoix = []
+    plateau = creer_plateau(nbTas), 
+    i=0
+
+    while i<nbParties:
+        IA_renforcement(renforcement, plateau, "IA Renforcée")
+        if not gagne(plateau):
+            plateau, choix = ordi(plateau, "IA")
+            lesChoix.append(choix)
+            if gagne(plateau):
+                print("L'Ordi a gagné")
+        else:
+            print("L'IA Renforcée a gagné")
+            renforce
+
+        i += 1
 
 def main():
-    renforcement = {
-        'plateau': {
-            'noTas': [
-                {
-                    'possibilite1': 'proba',
-                    'possibilite2': 'proba'
-                }, 
-                'proba'
-            ]
-        }
-    }
+    recompenses = [1, 1]
+    renforcement = {}
 
-    jeu(5, 5, renforcement)
+    apprenstissage(renforcement, recompenses, 5, 10)
 
 jeu(5, 4)
