@@ -132,7 +132,7 @@ def ordi(plateau, nomOrdi):
 
     return plateau
 
-def IA_renforcement(renforcement, plateau, nomIA):
+def IA_renforcement(renforcement, plateau, nomIA='IA_renforcee', probaLigneBase=5, probaCoupBase=5):
     print(f"Tour de {nomIA}")
     display_board_with_bare(plateau)
 
@@ -141,9 +141,9 @@ def IA_renforcement(renforcement, plateau, nomIA):
     if key not in renforcement:
         renforcement[key] = {}
         for i in range(len(plateau)):
-            renforcement[key][i] = [{}, 1]
+            renforcement[key][str(i)] = [{}, probaLigneBase]
             for j in range(1, plateau[i] + 1):
-                renforcement[key][i][0][j] = 1  # Initialiser les poids des choix possibles
+                renforcement[key][str(i)][0][j] = probaCoupBase  # Initialiser les poids des choix possibles
 
     # Vérifier que le plateau contient des tas non vides
     if all(tas == 0 for tas in plateau):
@@ -151,8 +151,9 @@ def IA_renforcement(renforcement, plateau, nomIA):
         return plateau, None
 
     # Sélection du tas
-    while True:
-        totalPossibleTas = sum(renforcement[key][i][1] for i in plateau)
+    tas = None
+    while tas is None:
+        totalPossibleTas = sum(renforcement[key][str(i)][1] for i in range(len(plateau)))
 
         # Si aucun choix n'est possible (poids incorrects ou plateau vide)
         if totalPossibleTas == 0:
@@ -164,18 +165,19 @@ def IA_renforcement(renforcement, plateau, nomIA):
 
         for i in range(len(plateau)):
             if plateau[i] > 0:  # S'assurer que le tas n'est pas vide
-                choix_tas -= renforcement[key][i][1]
+                choix_tas -= renforcement[key][str(i)][1]
                 if choix_tas <= 0:
                     tas = i
                     break
 
     # Sélection du nombre d'allumettes
-    while True:
+    nbAllumettes = None
+    while nbAllumettes is None:
         if plateau[tas] == 0:
             print(f"Erreur : Le tas {tas} est vide, mais sélectionné. Forcer un nouveau choix.")
             tas = next(i for i in range(len(plateau)) if plateau[i] > 0)
 
-        totalPossibleAllumettes = sum(renforcement[key][tas][0][j] for j in range(1, plateau[tas] + 1))
+        totalPossibleAllumettes = sum(renforcement[key][str(tas)][0][j] for j in range(1, plateau[tas] + 1))
 
         # Si aucun choix d'allumettes valide (poids incorrects)
         if totalPossibleAllumettes == 0:
@@ -186,7 +188,7 @@ def IA_renforcement(renforcement, plateau, nomIA):
         choix_allumettes = randint(1, totalPossibleAllumettes)
 
         for j in range(1, plateau[tas] + 1):
-            choix_allumettes -= renforcement[key][tas][0][j]
+            choix_allumettes -= renforcement[key][str(tas)][0][j]
             if choix_allumettes <= 0:
                 nbAllumettes = j
                 break
@@ -199,6 +201,7 @@ def IA_renforcement(renforcement, plateau, nomIA):
     return plateau, (key, tas, nbAllumettes)
 
 def apprenstissage(renforcement, recompenses, nbTas=5, nbParties=1000):
+    victoireDefaite = [0,0]  # [victoire, défaite]
     for i in range(nbParties):
         lesChoix = []
         plateau = creer_plateau(nbTas)
@@ -213,10 +216,11 @@ def apprenstissage(renforcement, recompenses, nbTas=5, nbParties=1000):
 
             if gagne(plateau):  # Si l'IA renforcée gagne
                 print("L'IA Renforcée a gagné")
+                victoireDefaite[0] += 1
                 for choix in lesChoix:
                     key, tas, nbAllumettes = choix
-                    renforcement[key][tas][1] += recompenses[0]
-                    renforcement[key][tas][0][nbAllumettes] += recompenses[0]
+                    renforcement[key][str(tas)][1] += recompenses[0]
+                    renforcement[key][str(tas)][0][nbAllumettes] += recompenses[0]
                 break
 
             # L'IA classique joue en suivant la stratégie gagnante
@@ -226,17 +230,20 @@ def apprenstissage(renforcement, recompenses, nbTas=5, nbParties=1000):
 
             if gagne(plateau):  # Si l'IA classique gagne
                 print("L'IA classique a gagné")
+                victoireDefaite[1] += 1
                 for choix in lesChoix:
                     key, tas, nbAllumettes = choix
-                    renforcement[key][tas][1] -= recompenses[1]
-                    renforcement[key][tas][0][nbAllumettes] -= recompenses[1]
+                    renforcement[key][str(tas)][1] -= recompenses[1]
+                    renforcement[key][str(tas)][0][nbAllumettes] -= recompenses[1]
                 break
+        
+    print(f"Résultats : Victoires : {victoireDefaite[0]}, Défaites : {victoireDefaite[1]}")
 
 def main():
-    recompenses = [1, 1]
+    recompenses = [1, 1] # [bonus, malus]
     renforcement = {}
 
-    apprenstissage(renforcement, recompenses, 5, 10)
+    apprenstissage(renforcement, recompenses, 4, 100)
 
 if __name__ == "__main__":
     main()
