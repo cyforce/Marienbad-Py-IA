@@ -142,10 +142,24 @@ def envoiDataPartie(params, victoireDefaite, renforcement):
     # Convertir le dictionnaire en une chaîne JSON
     renforcement_json = json.dumps(renforcement)
 
-    with mysql.connector.connect(**connection_params) as db :
+    with mysql.connector.connect(**connection_params) as db:
         with db.cursor() as c:
-            c.execute(f"INSERT INTO Parties (param_bonus, param_malus, param_nbTas, param_nbParties, partie_nbVictoire, jeu_dico) \
-                    values (${params[0]}, ${params[1]}, ${params[2]}, ${params[3]}, , ${victoireDefaite[0]}, '${str(renforcement_json)}')")
+            # Requête SQL avec placeholders sécurisés
+            query = """
+                INSERT INTO Parties (param_bonus, param_malus, param_nbTas, param_nbParties, partie_nbVictoire, jeu_dico)
+                VALUES (%s, %s, %s, %s, %s, %s)
+            """
+            values = (
+                params[0],  # param_bonus
+                params[1],  # param_malus
+                params[2],  # param_nbTas
+                params[3],  # param_nbParties
+                victoireDefaite[0],  # partie_nbVictoire
+                renforcement_json  # jeu_dico
+            )
+
+            # Exécution de la requête
+            c.execute(query, values)
             db.commit()
 
 if __name__ == "__main__":
