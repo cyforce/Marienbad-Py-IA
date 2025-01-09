@@ -1,7 +1,7 @@
-import mysql.connector
-import json
 from random import *
 from collections import *
+import mysql.connector
+import json
 from env import connection_params
 
 def creer_plateau(n):
@@ -144,19 +144,9 @@ def envoiDataPartie(params, victoireDefaite, renforcement):
 
     with mysql.connector.connect(**connection_params) as db :
         with db.cursor() as c:
-            query = """
-                INSERT INTO Parties (param_bonus, param_malus, param_nbTas, param_nbParties, partie_nbVictoire, jeu_dico)
-                VALUES (%s, %s, %s, %s, %s, %s)
-            """
-            values = (
-                params[0], 
-                params[1], 
-                params[2], 
-                params[3], 
-                victoireDefaite[0], 
-                renforcement_json
-            )
-            c.execute(query, values)
+            c.execute(f"INSERT INTO Parties (param_bonus, param_malus, param_nbTas, param_nbParties, partie_nbVictoire, jeu_dico) \
+                    values (${params[0]}, ${params[1]}, ${params[2]}, ${params[3]}, , ${victoireDefaite[0]}, ${str(renforcement_json)})")
+            db.commit()
 
 if __name__ == "__main__":
     main()
