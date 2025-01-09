@@ -137,7 +137,7 @@ def main():
     renforcement = {}
 
     for i in range(3, 503, 2):
-        for j in range(100, 1000, 100):
+        for j in range(100, 500, 100):
             params[2] = i
             params[3] = j
             apprenstissage(renforcement, params)
