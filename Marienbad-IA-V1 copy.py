@@ -230,7 +230,7 @@ def main():
     recompenses = [1, 1] # [bonus, malus]
     renforcement = {}
 
-    apprenstissage(renforcement, recompenses, 100, 200)
+    apprenstissage(renforcement, recompenses, 30, 200)
 
 if __name__ == "__main__":
     main()
