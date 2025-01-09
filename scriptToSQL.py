@@ -127,7 +127,7 @@ def apprenstissage(renforcement, params):
                     key, tas, nbAllumettes = choix
                     renforcement[key][str(tas)][nbAllumettes] -= params[1]
                 break
-        envoiDataPartie(params, victoireDefaite, renforcement)
+        envoiDataPartie(params, victoireDefaite, renforcement, (i + 1))
         
     print(f"Résultats : Victoires : {victoireDefaite[0]}, Défaites : {victoireDefaite[1]}")
 
@@ -138,7 +138,7 @@ def main():
 
     apprenstissage(renforcement, params)
 
-def envoiDataPartie(params, victoireDefaite, renforcement):
+def envoiDataPartie(params, victoireDefaite, renforcement, numeroPartie):
     # Convertir le dictionnaire en une chaîne JSON
     renforcement_json = json.dumps(renforcement)
 
@@ -146,14 +146,15 @@ def envoiDataPartie(params, victoireDefaite, renforcement):
         with db.cursor() as c:
             # Requête SQL avec placeholders sécurisés
             query = """
-                INSERT INTO Parties (param_bonus, param_malus, param_nbTas, param_nbParties, partie_nbVictoire, jeu_dico)
-                VALUES (%s, %s, %s, %s, %s, %s)
+                INSERT INTO Parties (param_bonus, param_malus, param_nbTas, param_nbParties, partie_numeroPartie, partie_nbVictoire, jeu_dico)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
             """
             values = (
                 params[0],  # param_bonus
                 params[1],  # param_malus
                 params[2],  # param_nbTas
                 params[3],  # param_nbParties
+                numeroPartie,  # partie_numeroPartie
                 victoireDefaite[0],  # partie_nbVictoire
                 renforcement_json  # jeu_dico
             )
