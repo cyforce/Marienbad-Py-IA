@@ -145,7 +145,7 @@ def envoiDataPartie(params, victoireDefaite, renforcement):
     with mysql.connector.connect(**connection_params) as db :
         with db.cursor() as c:
             c.execute(f"INSERT INTO Parties (param_bonus, param_malus, param_nbTas, param_nbParties, partie_nbVictoire, jeu_dico) \
-                    values (${params[0]}, ${params[1]}, ${params[2]}, ${params[3]}, , ${victoireDefaite[0]}, ${str(renforcement_json)})")
+                    values (${params[0]}, ${params[1]}, ${params[2]}, ${params[3]}, , ${victoireDefaite[0]}, '${str(renforcement_json)}')")
             db.commit()
 
 if __name__ == "__main__":
