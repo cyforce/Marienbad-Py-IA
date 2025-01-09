@@ -136,7 +136,12 @@ def main():
     params = recompenses + [3, 100] # [bonus, malus, nbTas, nbParties]
     renforcement = {}
 
-    apprenstissage(renforcement, params)
+    for i in range(3, 501, 2):
+        for j in range(100, 1000, 100):
+            params[2] = i
+            params[3] = j
+            apprenstissage(renforcement, params)
+            print(f"Nombre de tas : {i}, Nombre de parties : {j}")
 
 def envoiDataPartie(params, victoireDefaite, renforcement, numeroPartie):
     # Convertir le dictionnaire en une chaîne JSON
